@@ -56,7 +56,7 @@ def display_menu
   MENU_ITEMS.each_with_index do |menu_item, index|
     user_index = index + 1
     # Display item with index first, then name and price
-    puts "#{user_index}. #{menu_item.name}: #{menu_item.price}"
+    puts "#{user_index}. #{menu_item.name}: $#{menu_item.price}"
   end
   puts
   puts "press any key to go back to main menu"
@@ -70,7 +70,7 @@ def order_items
   MENU_ITEMS.each_with_index do |menu_item, index|
     user_index = index + 1
     # Display item with index first, then name and price
-    puts "#{user_index}. #{menu_item.name}: #{menu_item.price}"
+    puts "#{user_index}. #{menu_item.name}: $#{menu_item.price}"
   end
 
   order = Order.new
@@ -78,18 +78,17 @@ def order_items
   loop do
     puts 'What would you like?'
     choice = gets.chomp
-    puts "You ordered #{MENU_ITEMS[choice.to_i - 1].name}"
-    # Stop looping if user pressed just enter
-    break if choice == ""
-
     # User must choose an index number
     user_index = choice.to_i
-
+    # Stop looping if user pressed just enter
+    break if choice == ""
     # If the user entered in an invalid choice
     if user_index < 1 || user_index > 6 
       puts "Invalid choice, please try again"
       next # Loop through and ask again
     end
+    puts "You ordered #{MENU_ITEMS[choice.to_i - 1].name}"
+    
 
     index = user_index - 1 # Convert to zero-based index
     menu_item = MENU_ITEMS[index]
@@ -128,7 +127,7 @@ def main_menu(order)
           system 'clear'
           show_bill(order)
         when 'x'
-          break
+          exit
         else
           puts "Invalid choice: #{choice}"
       end

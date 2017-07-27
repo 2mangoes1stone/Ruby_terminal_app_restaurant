@@ -41,6 +41,7 @@ class Order
   end
 
   def bill
+    @items = @items.flatten
     table = Terminal::Table.new headings: ['Name', 'Price'] do |t|
       @items.each do |item|
         t << [item.name, "$#{item.price}"]
@@ -53,70 +54,44 @@ class Order
 end
 
 
-MENU_ITEMS = [
+ENTREE = [
   Entree.new('Skewers', 8, 'Yummy chicken skewers'),
-  Entree.new('Eggplant stew', 9, 'Gooey eggplant'), 
-  Main.new('Steak', 30, 'T-bone steak cooked to perfection'),
-  Main.new('Burger', 20, 'Southern fried chiken burger'),
-  Dessert.new('Gelato', 8, 'Delicious home mage gelato'),
-  Dessert.new('Waffle', 9, 'Authentic Belgian wallfe'),
-  Drink.new('Shandy', 7, 'Locally made beer and lemonade'),
-  Drink.new('Sex on the beach', 8, 'Yummy cocktail'),
-  Drink.new('Cosmopolitan', 8, 'very trendy'),
-  Drink.new('Espresso Martini', 9, 'bit of coffee'),
-  Drink.new('Mojito', 10, 'very rummy'),
-  Drink.new('Margarita', 10, 'tequilaaaaaaaaaa')
+  Entree.new('Eggplant stew', 9, 'Gooey eggplant')
 ]
 
+MAIN = [
+  Main.new('Steak', 30, 'T-bone steak cooked to perfection'),
+  Main.new('Burger', 20, 'Southern fried chiken burger')
+]
+
+DESSERT = [
+  Dessert.new('Gelato', 8, 'Delicious home mage gelato'),
+  Dessert.new('Waffle', 9, 'Authentic Belgian wallfe')
+]
+
+MENU_ITEMS = [
+  ENTREE, MAIN, DESSERT
+]
+
+def sub_menu_items(items) 
+  items.each_with_index do |menu_item, index|
+    user_index = index + 1
+    # Display item with index first, then name and price
+    puts "#{user_index}. #{menu_item.name}: $#{menu_item.price}"
+    puts "             #{menu_item.description}"
+  end
+end
 
 def menu_choice
-
   menu_choice = gets.chomp
   system 'clear'
   case menu_choice
     when "1"
-      puts "1. #{MENU_ITEMS[0].name}: #{MENU_ITEMS[0].price}"
-      puts "     #{MENU_ITEMS[0].description}"
-      puts
-      puts "2. #{MENU_ITEMS[1].name}: #{MENU_ITEMS[1].price}"
-      puts "     #{MENU_ITEMS[1].description}"
-      puts
+      sub_menu_items(ENTREE)
     when "2"
-      puts "1. #{MENU_ITEMS[2].name}: #{MENU_ITEMS[2].price}"
-      puts "     #{MENU_ITEMS[2].description}"
-      puts
-      puts "2. #{MENU_ITEMS[3].name}: #{MENU_ITEMS[3].price}"
-      puts "     #{MENU_ITEMS[3].description}"
-      puts
+      sub_menu_items(MAIN)
     when "3"
-      puts "1. #{MENU_ITEMS[4].name}: #{MENU_ITEMS[4].price}"
-      puts "     #{MENU_ITEMS[4].description}"
-      puts
-      puts "2. #{MENU_ITEMS[5].name}: #{MENU_ITEMS[5].price}"
-      puts "     #{MENU_ITEMS[5].description}"
-      puts
-    when "4"
-      puts "1. #{MENU_ITEMS[6].name}: #{MENU_ITEMS[6].price}"
-      puts "     #{MENU_ITEMS[6].description}"
-      puts
-      puts "2. #{MENU_ITEMS[7].name}: #{MENU_ITEMS[7].price}"
-      puts "     #{MENU_ITEMS[7].description}"
-      puts
-      puts "3. #{MENU_ITEMS[8].name}: #{MENU_ITEMS[8].price}"
-      puts "     #{MENU_ITEMS[8].description}"
-      puts
-      puts "3. #{MENU_ITEMS[9].name}: #{MENU_ITEMS[9].price}"
-      puts "     #{MENU_ITEMS[9].description}"
-      puts
-      puts "3. #{MENU_ITEMS[9].name}: #{MENU_ITEMS[9].price}"
-      puts "     #{MENU_ITEMS[9].description}"
-      puts
-      puts "3. #{MENU_ITEMS[10].name}: #{MENU_ITEMS[10].price}"
-      puts "     #{MENU_ITEMS[10].description}"
-      puts
-      puts "3. #{MENU_ITEMS[11].name}: #{MENU_ITEMS[11].price}"
-      puts "     #{MENU_ITEMS[11].description}"
-      puts
+      sub_menu_items(DESSERT)
     when "x"
       main_menu([])
   end
@@ -128,7 +103,6 @@ def sub_menu
   puts "1. Entree"
   puts "2. Mains"
   puts "3. Desserts"
-  puts "4. Drinks"
   puts "x. Back to main menu"
 
   menu_choice
@@ -151,10 +125,10 @@ end
 # Add menu items
 def order_items
 
-  MENU_ITEMS.each_with_index do |menu_item, index|
+  MENU_ITEMS.flatten.each_with_index do |menu_item, index|
     user_index = index + 1
     # Display item with index first, then name and price
-    puts "#{user_index}. #{menu_item.class} #{menu_item.name}: #{menu_item.price}"
+    puts "#{user_index}. #{menu_item.class} #{menu_item.name}: $#{menu_item.price}"
   end
 
   order = Order.new
@@ -162,21 +136,20 @@ def order_items
   loop do
     puts 'What would you like?'
     choice = gets.chomp
-    puts "You ordered #{MENU_ITEMS[choice.to_i - 1].name}"
-    # Stop looping if user pressed just enter
-    break if choice == ""
-
     # User must choose an index number
     user_index = choice.to_i
-
+    # Stop looping if user pressed just enter
+    break if choice == ""
     # If the user entered in an invalid choice
-    if user_index < 1 || user_index > 11
+    if user_index < 1 || user_index > 6
       puts "Invalid choice, please try again"
       next # Loop through and ask again
     end
+    puts "You ordered #{MENU_ITEMS.flatten[choice.to_i - 1].name}"
+    
 
     index = user_index - 1 # Convert to zero-based index
-    menu_item = MENU_ITEMS[index]
+    menu_item = MENU_ITEMS.flatten[index]
 
     # Add item to order
   order << menu_item
@@ -212,7 +185,7 @@ def main_menu(order)
           system 'clear'
           show_bill(order)
         when 'x'
-          break
+          exit
         else
           puts "Invalid choice: #{choice}"
       end

@@ -107,7 +107,7 @@ def sub_menu_items_for_order(items, order)
     # Stop looping if user pressed just enter
     sub_menu_for_order(order) if choice == ""
     # If the user entered in an invalid choice
-    if user_index < 1 || user_index > 2
+    if user_index < 1 || user_index > 6
       puts "Invalid choice, please try again"
       next # Loop through and ask again
     end

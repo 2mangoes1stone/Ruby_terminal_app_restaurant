@@ -37,63 +37,40 @@ class Order
     @items.each do |item|
       total += item.price
     end
-    total
-  end
-
-
-
-  def total_with_surcharge
-    total + (total * 0.015)
+    "$#{total}"
   end
 
   def bill
-    loop do
-      puts "Will you be paying by cash or card?"
-      choice = gets.chomp
-      if choice == 'cash'
-        table = Terminal::Table.new headings: ['Name', 'Price'] do |t|
-          @items.each do |item|
-            t << [item.name, "$#{item.price}"]
-          end
-          t.add_separator
-          t << ['TOTAL', "$#{total}"]
-        end
-        return table
-      elsif choice == 'card'
-        table = Terminal::Table.new headings: ['Name', 'Price'] do |t|
-          @items.each do |item|
-            t << [item.name, "$#{item.price}"]
-          end
-          t.add_separator
-          t << ['Sub Total', total]
-          t.add_separator
-          t << ['Surcharge', '1.5%']
-          t.add_separator
-          t << ['TOTAL', total_with_surcharge]
-        end
-        return table
-      else 
-        puts 'invalid entry, please try again'
-        next
+    table = Terminal::Table.new headings: ['Name', 'Price'] do |t|
+      @items.each do |item|
+        t << [item.name, "$#{item.price}"]
       end
+      t.add_separator
+      t << ['TOTAL', total]
     end
+    table
   end
 end
 
 
 MENU_ITEMS = [
   Entree.new('Skewers', 8, 'Yummy chicken skewers'),
-  Entree.new('Eggplant stew', 9, 'Gooey eggplant' ), 
+  Entree.new('Eggplant stew', 9, 'Gooey eggplant'), 
   Main.new('Steak', 30, 'T-bone steak cooked to perfection'),
-  Main.new('Burger', 20, 'Souther fried chiken burger'),
+  Main.new('Burger', 20, 'Southern fried chiken burger'),
   Dessert.new('Gelato', 8, 'Delicious home mage gelato'),
   Dessert.new('Waffle', 9, 'Authentic Belgian wallfe'),
-  Drink.new('Beer', 7, 'Locally made beer'),
-  Drink.new('Soft Drink', 3.5, 'Yummy coke')
+  Drink.new('Shandy', 7, 'Locally made beer and lemonade'),
+  Drink.new('Sex on the beach', 8, 'Yummy cocktail'),
+  Drink.new('Cosmopolitan', 8, 'very trendy'),
+  Drink.new('Espresso Martini', 9, 'bit of coffee'),
+  Drink.new('Mojito', 10, 'very rummy'),
+  Drink.new('Margarita', 10, 'tequilaaaaaaaaaa')
 ]
 
 
 def menu_choice
+
   menu_choice = gets.chomp
   system 'clear'
   case menu_choice
@@ -124,6 +101,21 @@ def menu_choice
       puts
       puts "2. #{MENU_ITEMS[7].name}: #{MENU_ITEMS[7].price}"
       puts "     #{MENU_ITEMS[7].description}"
+      puts
+      puts "3. #{MENU_ITEMS[8].name}: #{MENU_ITEMS[8].price}"
+      puts "     #{MENU_ITEMS[8].description}"
+      puts
+      puts "3. #{MENU_ITEMS[9].name}: #{MENU_ITEMS[9].price}"
+      puts "     #{MENU_ITEMS[9].description}"
+      puts
+      puts "3. #{MENU_ITEMS[9].name}: #{MENU_ITEMS[9].price}"
+      puts "     #{MENU_ITEMS[9].description}"
+      puts
+      puts "3. #{MENU_ITEMS[10].name}: #{MENU_ITEMS[10].price}"
+      puts "     #{MENU_ITEMS[10].description}"
+      puts
+      puts "3. #{MENU_ITEMS[11].name}: #{MENU_ITEMS[11].price}"
+      puts "     #{MENU_ITEMS[11].description}"
       puts
     when "x"
       main_menu([])
@@ -170,17 +162,15 @@ def order_items
   loop do
     puts 'What would you like?'
     choice = gets.chomp
+    puts "You ordered #{MENU_ITEMS[choice.to_i - 1].name}"
     # Stop looping if user pressed just enter
     break if choice == ""
-    puts 'Please tell us how we can customise your meal'
-    edit = gets.chomp
-    
 
     # User must choose an index number
     user_index = choice.to_i
 
     # If the user entered in an invalid choice
-    if user_index < 1 || user_index > 8
+    if user_index < 1 || user_index > 11
       puts "Invalid choice, please try again"
       next # Loop through and ask again
     end

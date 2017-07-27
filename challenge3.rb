@@ -1,12 +1,11 @@
 require 'terminal-table'
 
 class MenuItem
-  attr_accessor :name, :price, :description
+  attr_accessor :name, :price
 
-  def initialize(name, price, description)
+  def initialize(name, price)
     @name = name
     @price = price
-    @description = description
   end
   
 end
@@ -54,14 +53,12 @@ end
 
 
 MENU_ITEMS = [
-  Entree.new('Skewers', 8, 'Yummy chicken skewers'),
-  Entree.new('Eggplant stew', 9, 'Gooey eggplant' ), 
-  Main.new('Steak', 30, 'T-bone steak cooked to perfection'),
-  Main.new('Burger', 20, 'Souther fried chiken burger'),
-  Dessert.new('Gelato', 8, 'Delicious home mage gelato'),
-  Dessert.new('Waffle', 9, 'Authentic Belgian wallfe'),
-  Drink.new('Beer', 7, 'Locally made beer'),
-  Drink.new('Soft Drink', 3.5, 'Yummy coke')
+  Entree.new('Skewers', 8),
+  Entree.new('Eggplant stew', 9), 
+  Main.new('Steak', 30),
+  Main.new('Burger', 20),
+  Dessert.new('Gelato', 8),
+  Dessert.new('Waffle', 9),
 ]
 
 
@@ -71,32 +68,13 @@ def menu_choice
   case menu_choice
     when "1"
       puts "1. #{MENU_ITEMS[0].name}: #{MENU_ITEMS[0].price}"
-      puts "     #{MENU_ITEMS[0].description}"
-      puts
       puts "2. #{MENU_ITEMS[1].name}: #{MENU_ITEMS[1].price}"
-      puts "     #{MENU_ITEMS[1].description}"
-      puts
     when "2"
       puts "1. #{MENU_ITEMS[2].name}: #{MENU_ITEMS[2].price}"
-      puts "     #{MENU_ITEMS[2].description}"
-      puts
       puts "2. #{MENU_ITEMS[3].name}: #{MENU_ITEMS[3].price}"
-      puts "     #{MENU_ITEMS[3].description}"
-      puts
     when "3"
       puts "1. #{MENU_ITEMS[4].name}: #{MENU_ITEMS[4].price}"
-      puts "     #{MENU_ITEMS[4].description}"
-      puts
       puts "2. #{MENU_ITEMS[5].name}: #{MENU_ITEMS[5].price}"
-      puts "     #{MENU_ITEMS[5].description}"
-      puts
-    when "4"
-      puts "1. #{MENU_ITEMS[6].name}: #{MENU_ITEMS[6].price}"
-      puts "     #{MENU_ITEMS[6].description}"
-      puts
-      puts "2. #{MENU_ITEMS[7].name}: #{MENU_ITEMS[7].price}"
-      puts "     #{MENU_ITEMS[7].description}"
-      puts
     when "x"
       main_menu([])
   end
@@ -108,7 +86,6 @@ def sub_menu
   puts "1. Entree"
   puts "2. Mains"
   puts "3. Desserts"
-  puts "4. Drinks"
   puts "x. Back to main menu"
 
   menu_choice
@@ -142,17 +119,15 @@ def order_items
   loop do
     puts 'What would you like?'
     choice = gets.chomp
+    puts "You ordered #{MENU_ITEMS[choice.to_i - 1].name}"
     # Stop looping if user pressed just enter
     break if choice == ""
-    puts 'Please tell us how we can customise your meal'
-    edit = gets.chomp
-    
 
     # User must choose an index number
     user_index = choice.to_i
 
     # If the user entered in an invalid choice
-    if user_index < 1 || user_index > 8
+    if user_index < 1 || user_index > 6
       puts "Invalid choice, please try again"
       next # Loop through and ask again
     end

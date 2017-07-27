@@ -82,6 +82,37 @@ def sub_menu_items(items)
   end
 end
 
+def sub_menu_items_for_order(items, order) 
+  items.each_with_index do |menu_item, index|
+    user_index = index + 1
+    # Display item with index first, then name and price
+    puts "#{user_index}. #{menu_item.name}: $#{menu_item.price}"
+    puts "             #{menu_item.description}"
+  end
+
+  loop do
+    puts 'What would you like?'
+    choice = gets.chomp
+    # User must choose an index number
+    user_index = choice.to_i
+    # Stop looping if user pressed just enter
+    sub_menu_for_order(order) if choice == ""
+    # If the user entered in an invalid choice
+    if user_index < 1 || user_index > 2
+      puts "Invalid choice, please try again"
+      next # Loop through and ask again
+    end
+    puts "You ordered #{items[choice.to_i - 1].name}"
+    
+
+    index = user_index - 1 # Convert to zero-based index
+    menu_item = items[index]
+
+    # Add item to order
+  order << menu_item
+  end
+end
+
 def menu_choice
   menu_choice = gets.chomp
   system 'clear'
@@ -94,6 +125,21 @@ def menu_choice
       sub_menu_items(DESSERT)
     when "x"
       main_menu([])
+  end
+end
+
+def menu_choice_for_order(order)
+  menu_choice = gets.chomp
+  system 'clear'
+  case menu_choice
+    when "1"
+      sub_menu_items_for_order(ENTREE, order)
+    when "2"
+      sub_menu_items_for_order(MAIN, order)
+    when "3"
+      sub_menu_items_for_order(DESSERT, order)
+    when "x"
+      main_menu(order)
   end
 end
 
@@ -112,6 +158,21 @@ def sub_menu
   return display_menu if choice
 end
 
+def sub_menu_for_order(order)
+  system 'clear'
+  puts "Please choose from a sub menu"
+  puts "1. Entree"
+  puts "2. Mains"
+  puts "3. Desserts"
+  puts "x. Back to main menu"
+
+  menu_choice_for_order(order)
+
+  puts "press any key to go back to previous menu"
+  choice = gets
+  return display_menu if choice
+end
+
 # Show menu
 def display_menu
   sub_menu
@@ -124,36 +185,9 @@ end
 
 # Add menu items
 def order_items
-
-  MENU_ITEMS.flatten.each_with_index do |menu_item, index|
-    user_index = index + 1
-    # Display item with index first, then name and price
-    puts "#{user_index}. #{menu_item.class} #{menu_item.name}: $#{menu_item.price}"
-  end
-
   order = Order.new
+  sub_menu_for_order(order)
 
-  loop do
-    puts 'What would you like?'
-    choice = gets.chomp
-    # User must choose an index number
-    user_index = choice.to_i
-    # Stop looping if user pressed just enter
-    break if choice == ""
-    # If the user entered in an invalid choice
-    if user_index < 1 || user_index > 6
-      puts "Invalid choice, please try again"
-      next # Loop through and ask again
-    end
-    puts "You ordered #{MENU_ITEMS.flatten[choice.to_i - 1].name}"
-    
-
-    index = user_index - 1 # Convert to zero-based index
-    menu_item = MENU_ITEMS.flatten[index]
-
-    # Add item to order
-  order << menu_item
-  end
   return main_menu(order)
 end
 
